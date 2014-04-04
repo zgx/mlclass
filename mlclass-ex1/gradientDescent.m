@@ -19,7 +19,7 @@ for iter = 1:num_iters
 
 	%theta = theta - (alpha / m *  sum((X * theta - y)(:,[1 1]) .* X ))'
 
-	theta = theta - (alpha / m *  sum(X .* (X * theta - y))')
+	theta = theta - (alpha / m *  (X' * (X * theta - y)));
 
 
 
