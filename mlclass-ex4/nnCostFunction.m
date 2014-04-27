@@ -75,16 +75,27 @@ end
 reg = (lambda / (2*m)) * (sum(Theta1(:, 2:end)(:) .^ 2) + sum(Theta2(:, 2:end)(:) .^ 2));
 J = -(1/m) * sum(sum(ex_y .* log(H) + (1 - ex_y) .* log(1 - H))) + reg;
 
+D_1 = zeros(size(Theta1_grad));
+D_2 = zeros(size(Theta2_grad));
 
+for i = 1:m
+	a1 = X(i, :)';
+	z2 = Theta1 * [1; a1];
+	a2 = sigmoid(z2);
+	z3 = Theta2 * [1 ; a2];
+	a3 = sigmoid(z3);
 
+	delta_3 = a3 - ex_y(i, :)';
+	delta_2 = Theta2' * delta_3 .* sigmoidGradient([1; z2]);
 
+	D_1 = D_1 + delta_2(2:end) * [1; a1]';
+	D_2 = D_2 + delta_3 * [1; a2]';
+end
 
-
-
-
-
-
-
+Theta1_tmp = [zeros(hidden_layer_size, 1) Theta1(:, 2:end)];
+Theta1_grad = D_1 ./ m + (lambda / m) * Theta1_tmp;
+Theta2_tmp = [zeros(num_labels, 1) Theta2(:, 2:end)];
+Theta2_grad = D_2 ./ m + (lambda / m) * Theta2_tmp;
 
 
 
